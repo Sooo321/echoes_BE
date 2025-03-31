@@ -20,9 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // 사용자 정보 저장은 이메일 인증 완료 후, 구현하는게 나을 거 같아서
-    // 일단 주석처리 해놨어요 !!
-   public Users signup(UserSignupRequestDTO request) {
+   public Users signup(UserSignupRequest request) {
 //        if (userRepository.existsByEmail(request.getEmail())) {
 //            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 //        }
