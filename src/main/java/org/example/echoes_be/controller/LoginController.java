@@ -3,8 +3,7 @@ package org.example.echoes_be.controller;
 
 import org.example.echoes_be.common.ApiResponse;
 import org.example.echoes_be.domain.Users;
-import org.example.echoes_be.dto.UserLoginRequest;
-import org.example.echoes_be.dto.UserSignupRequest;
+import org.example.echoes_be.dto.UserLoginRequestDTO;
 import org.example.echoes_be.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +21,13 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Users>> login(@RequestBody UserLoginRequest request) {
-        Users user = userService.login(request);
-        return ResponseEntity.ok(ApiResponse.success(user));
+    public ResponseEntity<ApiResponse<Users>> login(@RequestBody UserLoginRequestDTO request) {
+        try{
+            Users user = userService.login(request);
+            return ResponseEntity.ok(ApiResponse.success(user));
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.ok(ApiResponse.error(e.getMessage()));
+        }
     }
 
 }
