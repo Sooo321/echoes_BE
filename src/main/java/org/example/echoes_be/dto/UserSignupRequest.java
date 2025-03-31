@@ -5,6 +5,7 @@ public class UserSignupRequest {
     private String nickname;
     private String email;
     private String password;
+    private String code;
 
     public UserSignupRequest() {
     }
@@ -37,6 +38,10 @@ public class UserSignupRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCode() {
+        return code;
     }
 }
 
