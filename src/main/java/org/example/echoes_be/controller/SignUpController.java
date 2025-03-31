@@ -1,10 +1,8 @@
 package org.example.echoes_be.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.example.echoes_be.common.ApiResponse;
 import org.example.echoes_be.domain.Users;
-import org.example.echoes_be.dto.MailDTO;
-import org.example.echoes_be.dto.UserSignupRequest;
+import org.example.echoes_be.dto.UserSignupRequestDTO;
 import org.example.echoes_be.service.EmailService;
 import org.example.echoes_be.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +28,7 @@ public class SignUpController {
     // Spring boot 2.6+ 버전 부터는 @Autowired를 생략해도 자동 주입 가능.
 
     @PostMapping("/user")
-    public ResponseEntity<ApiResponse<Users>> signup(@RequestBody UserSignupRequest request) {
+    public ResponseEntity<ApiResponse<Users>> signup(@RequestBody UserSignupRequestDTO request) {
         Users user = userService.signup(request);
         return ResponseEntity.ok(ApiResponse.success(user));
     }
@@ -38,8 +36,8 @@ public class SignUpController {
 
     // 이메일 중복 확인
     @PostMapping("/checkEmail")
-    public ResponseEntity<ApiResponse<String>> checkEmail(@RequestBody UserSignupRequest userSignupRequest) {
-        String email = userSignupRequest.getEmail();
+    public ResponseEntity<ApiResponse<String>> checkEmail(@RequestBody UserSignupRequestDTO userSignupRequestDTO) {
+        String email = userSignupRequestDTO.getEmail();
         boolean isExisted = emailService.emailCheck(email);
 
         if (isExisted) {
@@ -53,9 +51,9 @@ public class SignUpController {
 
     // 이메일 인증 코드 전송
     @PostMapping("/sendEmail")
-    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody UserSignupRequest userSignupRequest ){
+    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody UserSignupRequestDTO userSignupRequestDTO){
 
-        String email = userSignupRequest.getEmail();
+        String email = userSignupRequestDTO.getEmail();
         String code = emailService.generateCode();
 
         emailService.sendEmail(email, code);
@@ -67,9 +65,9 @@ public class SignUpController {
 
     // 이메일 인증 코드 확인
     @PostMapping("/verifyEmail")
-    public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestBody UserSignupRequest userSignupRequest){
-        String email = userSignupRequest.getEmail();
-        String code = userSignupRequest.getCode();
+    public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestBody UserSignupRequestDTO userSignupRequestDTO){
+        String email = userSignupRequestDTO.getEmail();
+        String code = userSignupRequestDTO.getCode();
 
         if (code == null) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Code cannot be null"));

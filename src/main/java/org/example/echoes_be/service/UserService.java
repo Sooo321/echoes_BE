@@ -1,8 +1,8 @@
 package org.example.echoes_be.service;
 
 import org.example.echoes_be.domain.Users;
-import org.example.echoes_be.dto.UserLoginRequest;
-import org.example.echoes_be.dto.UserSignupRequest;
+import org.example.echoes_be.dto.UserLoginRequestDTO;
+import org.example.echoes_be.dto.UserSignupRequestDTO;
 import org.example.echoes_be.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +38,9 @@ public class UserService {
     }
 
 
-    public Users login(UserLoginRequest request) {
+    public Users login(UserLoginRequestDTO request) {
         Optional<Users> User = userRepository.findByEmail(request.getEmail());
+
         if (User.isPresent()) { //존재하는 이메일이면
             Users user = User.get(); //받아옴
             if (user.getPassword().equals(request.getPassword())) { //페스워드가 같으면
