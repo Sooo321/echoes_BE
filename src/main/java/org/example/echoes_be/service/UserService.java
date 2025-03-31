@@ -20,7 +20,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Users signup(UserSignupRequest request) {
+    // 사용자 정보 저장은 이메일 인증 완료 후, 구현하는게 나을 거 같아서
+    // 일단 주석처리 해놨어요 !!
+   public Users signup(UserSignupRequest request) {
 //        if (userRepository.existsByEmail(request.getEmail())) {
 //            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 //        }
@@ -36,6 +38,8 @@ public class UserService {
         return userRepository.save(user);
         //저장
     }
+
+
     public Users login(UserLoginRequest request) {
         Optional<Users> User = userRepository.findByEmail(request.getEmail());
         if (User.isPresent()) { //존재하는 이메일이면
@@ -49,6 +53,10 @@ public class UserService {
             throw new IllegalArgumentException("이메일이 존재하지 않습니다.");
         }
     }
+
+    // 이메일 인증 후 -> 사용자 저장
+    // 사용자 등록
+
 
 
 }
