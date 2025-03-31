@@ -1,5 +1,10 @@
 package org.example.echoes_be.common;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class ApiResponse<T> {
     //T : 제너릭 타입을 나타내는 표기법. 제네릭은 클래스나 메서드가 다양한 타입을 처리할 수 있도록 해줌.
     private boolean success;
@@ -23,27 +28,4 @@ public class ApiResponse<T> {
         return new ApiResponse<>(false, null, error);
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public T getResponse() {
-        return response;
-    }
-
-    public void setResponse(T response) {
-        this.response = response;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
 }

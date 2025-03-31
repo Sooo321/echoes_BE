@@ -19,10 +19,11 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     // 이메일 인증
     private final RedisTemplate<String, String> redisTemplate;
+    private final UserRepository userRepository;
+
     private final Random random = new Random();
 
     // 이메일 중복확인
-    private final UserRepository userRepository;
 
     public boolean emailCheck(String email) {
         Optional<Users> users = userRepository.findByEmail(email);
