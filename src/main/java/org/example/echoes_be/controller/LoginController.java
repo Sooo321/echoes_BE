@@ -26,7 +26,7 @@ public class LoginController {
             Users user = userService.login(request);
             return ResponseEntity.ok(ApiResponse.success(user));
         }catch(IllegalArgumentException e){
-            return ResponseEntity.ok(ApiResponse.error(e.getMessage()));
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
 

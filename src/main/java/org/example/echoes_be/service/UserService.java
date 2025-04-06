@@ -20,11 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-   public Users signup(UserSignupRequest request) {
-//        if (userRepository.existsByEmail(request.getEmail())) {
-//            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-//        }
-
+   public Users signup(UserSignupRequestDTO request) {
         Long today = Long.valueOf(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)); //오늘 날짜 받아오기
 
         Users user = new Users(
