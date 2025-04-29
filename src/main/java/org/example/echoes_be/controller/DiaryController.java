@@ -1,32 +1,45 @@
 package org.example.echoes_be.controller;
 
-import org.apache.coyote.Response;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.example.echoes_be.common.ApiResponse;
 import org.example.echoes_be.domain.Diary;
-import org.example.echoes_be.dto.DiarySaveRequestDto;
+import org.example.echoes_be.dto.DiarySaveRequestDTO;
+import org.example.echoes_be.security.JwtUtil;
 import org.example.echoes_be.service.DiaryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/diary")
+@RequiredArgsConstructor
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final JwtUtil jwtUtil;
 
-    public DiaryController(DiaryService diaryService){
-        this.diaryService = diaryService;
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
-    @PostMapping("/save/{user_id}")
+
+    @PostMapping("/save")
     public ResponseEntity<ApiResponse<Diary>> saveDiary(
-            @PathVariable Long user_id,
-            @RequestBody DiarySaveRequestDto requestDto
-    ){
+            @RequestBody DiarySaveRequestDTO request,
+            HttpServletRequest httpRequest
+    ) {
         try {
-            Diary diary = diaryService.saveDiary(requestDto, user_id);
+            String token = resolveToken(httpRequest); // Authorization 헤더에서 토큰 꺼냄
+            String userId = jwtUtil.extractUserId(token); // 토큰에서 userId 추출
+
+            Diary diary = diaryService.saveDiary(Long.parseLong(userId), request); // userId와 request를 같이 넘김
             return ResponseEntity.ok(ApiResponse.success(diary));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
+
 }
