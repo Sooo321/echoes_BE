@@ -31,7 +31,7 @@ public class DiaryService {
                 .user(user) // 작성자 정보 연결
                 .title(request.getTitle())
                 .content(request.getContent())
-                .created_at(request.getCregated_at())
+                .created_at(request.getCreated_at())
                 .build(); //객체 생성을 완료하는 메서드
 
         //Diary.builder()
