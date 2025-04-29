@@ -1,11 +1,10 @@
 package org.example.echoes_be.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -20,6 +19,7 @@ public class Users {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+    //@Column : 칼럼 이름을 커스텀으로 지정하기 위해, NOT NULL 설정을 하기 위해,특정한 데이터 베이스 설정을 지정하기 위해, 명시적으로 매핑 의도를 분명하게 하기 ㅜ이해
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -27,33 +27,29 @@ public class Users {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "access_date")
-    private Long accessDate;
+    private Long createdDate; // 가입 날짜
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Diary> diaries = new ArrayList<>();
+    private Long accessDate; // 접속 날짜
 
-    //OneTomany 관계로 Diary와 연결
-    //cascade = CascadeType.ALL : 유저가 삭제되면 Diary도 함께 삭제 됨
-    //orphanRemoval = true : 유저에서 diary를 제거하면 diary도 삭제됨
-    //List <Diary> diaries : 여러개의 diary를 가질 수 있음.
 
     public Users(){
         //기본 생성자
+        //클래스가 객체로 생성될 때 아무런 값을 전달하지 않아도 호출될 수 있는 생성자
         //@Autowired 로 주입할 때나 JPA 엔티티를 사용할 때 기본 생성자가 필요함.
     }
 
-    public Users(String nickname, String email, String password, Long accessDate) {
+    public Users(String nickname, String email, String password, Long accessDate, Long createdDate) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.createdDate = createdDate;
         this.accessDate = accessDate;
-    }
 
-    //@Column : 칼럼 이름을 커스텀으로 지정하기 위해, NOT NULL 설정을 하기 위해,특정한 데이터 베이스 설정을 지정하기 위해, 명시적으로 매핑 의도를 분명하게 하기 위해
+    }
 
 
 }
+
+
 
 

@@ -4,7 +4,7 @@ package org.example.echoes_be.service;
 import jakarta.transaction.Transactional;
 import org.example.echoes_be.domain.Diary;
 import org.example.echoes_be.domain.Users;
-import org.example.echoes_be.dto.DiarySaveRequestDto;
+import org.example.echoes_be.dto.DiarySaveRequestDTO;
 import org.example.echoes_be.repository.DiaryRepository;
 import org.example.echoes_be.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -22,15 +22,16 @@ public class DiaryService {
         this.diaryRepository = diaryRepository;
     }
 
-    public Diary saveDiary(DiarySaveRequestDto request, Long user_id){
+    public Diary saveDiary(Long user_id, DiarySaveRequestDTO request ){
         //request는 클라이언트에서 보내는 요청 데이터를 담는 변수라는 의미로 많이 사용됨.
         Users user = userRepository.findById(user_id)
                 .orElseThrow(()-> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         // 2. Diary 객체를 생성 (DTO에서 데이터 추출)
         Diary diary = Diary.builder()
+                .user(user) // 작성자 정보 연결
+                .title(request.getTitle())
                 .content(request.getContent())
                 .created_at(request.getCreated_at())
-                .user(user) // 작성자 정보 연결
                 .build(); //객체 생성을 완료하는 메서드
 
         //Diary.builder()
