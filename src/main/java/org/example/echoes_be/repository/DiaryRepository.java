@@ -1,7 +1,22 @@
 package org.example.echoes_be.repository;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.example.echoes_be.domain.Diary;
+import org.example.echoes_be.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface DiaryRepository extends JpaRepository<Diary,Long> {
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+public interface DiaryRepository extends JpaRepository<Diary, Long> {
+    // 소프트 삭제된 항목은 제외하고 조회
+    @Query("SELECT d FROM Diary d WHERE d.user.id = :userId AND d.isDeleted = false")
+    List<Diary> findByUserIdAndNotDeleted(@Param("userId") Long userId);
+    //일기 조회
+    Optional<Diary> findByUserIdAndCreatedAtAndIsDeletedFalse(Long userId, LocalDate createdAt);
+    List<Diary> findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(Long userId);
+
+
 }

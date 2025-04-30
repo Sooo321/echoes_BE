@@ -38,7 +38,7 @@ public class UserSignupIntegrationTest {
         );
 
         // when
-        MvcResult result = mockMvc.perform(post("/api/auth/signUp")
+        MvcResult result = mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupRequest)))
                 .andDo(print()) // 요청/응답 전체 로그

@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class Diary {
 
     @Id
-    @Column(name="Diary_id")
+    @Column(name="diary_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -34,12 +34,14 @@ public class Diary {
     private String content;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDate created_at;
+    private LocalDate createdAt;
 
+    @Builder.Default
     @Column(name = "is_favorite")
-    private boolean is_favorite = false;
+    private boolean isFavorite = false;
 
+    @Builder.Default
     @Column(name = "is_deleted")
-    private boolean is_deleted = false;
+    private boolean isDeleted = false;
 
 }

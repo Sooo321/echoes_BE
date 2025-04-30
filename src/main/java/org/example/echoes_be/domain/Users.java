@@ -1,14 +1,14 @@
 package org.example.echoes_be.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class Users {
 
@@ -32,20 +32,20 @@ public class Users {
     private Long accessDate; // 접속 날짜
 
 
-    public Users(){
-        //기본 생성자
-        //클래스가 객체로 생성될 때 아무런 값을 전달하지 않아도 호출될 수 있는 생성자
-        //@Autowired 로 주입할 때나 JPA 엔티티를 사용할 때 기본 생성자가 필요함.
-    }
-
-    public Users(String nickname, String email, String password, Long accessDate, Long createdDate) {
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.createdDate = createdDate;
-        this.accessDate = accessDate;
-
-    }
+//    public Users(){
+//        //기본 생성자
+//        //클래스가 객체로 생성될 때 아무런 값을 전달하지 않아도 호출될 수 있는 생성자
+//        //@Autowired 로 주입할 때나 JPA 엔티티를 사용할 때 기본 생성자가 필요함.
+//    }
+//
+//    public Users(String nickname, String email, String password, Long accessDate, Long createdDate) {
+//        this.nickname = nickname;
+//        this.email = email;
+//        this.password = password;
+//        this.createdDate = createdDate;
+//        this.accessDate = accessDate;
+//
+//    }
 
 
 }

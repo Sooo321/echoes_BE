@@ -27,7 +27,7 @@ public class SignUpController {
     // 생성자 주입(DI)
     // Spring boot 2.6+ 버전 부터는 @Autowired를 생략해도 자동 주입 가능.
 
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Users>> signup(@RequestBody UserSignupRequestDTO request) {
         Users user = userService.signup(request);
         return ResponseEntity.ok(ApiResponse.success(user));

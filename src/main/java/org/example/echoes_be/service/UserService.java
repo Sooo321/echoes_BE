@@ -37,15 +37,16 @@ public class UserService {
        String encodedPassword = passwordEncoder.encode(request.getPassword());
         Long today = Long.valueOf(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)); //오늘 날짜 받아오기
 
-       Users user = new Users(
-               request.getNickname(),
-               request.getEmail(),
-               encodedPassword,
-               today, // accessDate
-               today  // createdDate
-       );
+       Users user = Users.builder()
+               .nickname(request.getNickname())
+               .email(request.getEmail())
+               .password(encodedPassword)
+               .accessDate(today)
+               .createdDate(today)
+               .build();
 
-        return userRepository.save(user);
+
+       return userRepository.save(user);
         //저장
     }
 

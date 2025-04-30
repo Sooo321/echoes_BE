@@ -37,7 +37,7 @@ public class UserLoginIntegrationTest {
                 "password123"
         );
 
-        mockMvc.perform(post("/api/auth/signUp")
+        mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupRequest)))
                 .andExpect(status().isOk());
