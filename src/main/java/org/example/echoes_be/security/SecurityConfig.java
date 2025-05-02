@@ -26,8 +26,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
+                // h2-console 화면 구성 허용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/auth/**").permitAll()
+                        .requestMatchers("/api/login", "/api/auth/**","/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

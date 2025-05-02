@@ -2,13 +2,13 @@ package org.example.echoes_be.service;
 
 
 import jakarta.transaction.Transactional;
+import org.example.echoes_be.client.GPTClient;
 import org.example.echoes_be.domain.Diary;
 import org.example.echoes_be.domain.Users;
 import org.example.echoes_be.dto.*;
 import org.example.echoes_be.repository.DiaryRepository;
 import org.example.echoes_be.repository.UserRepository;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,9 +22,10 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
 
-    public DiaryService(UserRepository userRepository, DiaryRepository diaryRepository){
+    public DiaryService(UserRepository userRepository, DiaryRepository diaryRepository, GPTClient gptClient){
         this.userRepository = userRepository;
         this.diaryRepository = diaryRepository;
+        this.gptClient = gptClient;
     }
 
     //일기 저장
@@ -142,6 +143,26 @@ public class DiaryService {
     }
 
 
+    // 조언 생성하기
+    private final GPTClient gptClient;
 
+    public ReplyResponseDTO generateReply(Long diaryId) {
 
+        // DB에서 일기 가져오기
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new RuntimeException("Diary not found"));
+        String content = diary.getContent();
+
+        // 감정 분석 (임시)
+        List<String> emotionTags = List.of("#행복한", "#기쁜");
+
+        // GPT 호출
+        String reply = gptClient.generateAdvice(content, emotionTags);
+
+        return ReplyResponseDTO.builder()
+                .diaryId(diary.getId())
+                .emotionTags(emotionTags)
+                .reply(reply)
+                .build();
+    }
 }

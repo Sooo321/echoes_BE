@@ -106,6 +106,7 @@ public class DiaryController {
         DiaryResponseDTO result = diaryService.getDiaryByDate(userId, date);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
+
     @GetMapping("/favorites")
     public ResponseEntity<ApiResponse<List<DiaryResponseDTO>>> getFavoriteDiaries(@RequestParam Long userId) {
         List<DiaryResponseDTO> result = diaryService.getFavoriteDiaries(userId);
@@ -127,6 +128,13 @@ public class DiaryController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
+    }
+
+    // 조언 생성
+    @PostMapping("/{diaryId}/reply")
+    public ResponseEntity<ReplyResponseDTO> generateReply(@PathVariable Long diaryId) {
+        ReplyResponseDTO response = diaryService.generateReply(diaryId);
+        return ResponseEntity.ok(response);
     }
 
 }

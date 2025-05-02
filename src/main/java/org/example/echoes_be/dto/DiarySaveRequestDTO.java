@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiarySaveRequestDTO {
+    private Long diaryId;
     private String title;
     private String content;
 
