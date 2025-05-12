@@ -4,9 +4,11 @@ package org.example.echoes_be.service;
 import jakarta.transaction.Transactional;
 import org.example.echoes_be.client.GPTClient;
 import org.example.echoes_be.domain.Diary;
+import org.example.echoes_be.domain.GptResponse;
 import org.example.echoes_be.domain.Users;
 import org.example.echoes_be.dto.*;
 import org.example.echoes_be.repository.DiaryRepository;
+import org.example.echoes_be.repository.GptResponseRepository;
 import org.example.echoes_be.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
@@ -21,10 +23,12 @@ public class DiaryService {
 
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
+    private final GptResponseRepository gptResponseRepository;
 
-    public DiaryService(UserRepository userRepository, DiaryRepository diaryRepository, GPTClient gptClient){
+    public DiaryService(UserRepository userRepository, DiaryRepository diaryRepository, GptResponseRepository gptResponseRepository, GPTClient gptClient){
         this.userRepository = userRepository;
         this.diaryRepository = diaryRepository;
+        this.gptResponseRepository = gptResponseRepository;
         this.gptClient = gptClient;
     }
 
@@ -154,26 +158,40 @@ public class DiaryService {
     }
 
 
-    // 조언 생성하기
+
     private final GPTClient gptClient;
 
-    public ReplyResponseDTO generateReply(Long diaryId) {
-
-        // DB에서 일기 가져오기
+    // 조언 생성하기
+    @Transactional
+    public GptResponseDTO createGptResponse(Long diaryId) {
+        // 1. 저장된 일기 가져오기
         Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new RuntimeException("Diary not found"));
-        String content = diary.getContent();
+                .orElseThrow(() -> new IllegalArgumentException("일기를 찾을 수 없습니다."));
 
-        // 감정 분석 (임시)
-        List<String> emotionTags = List.of("#행복한", "#기쁜");
+        if (gptResponseRepository.findById(diaryId).isPresent()) {
+            throw new IllegalStateException("이미 해당 일기에 대한 조언이 존재합니다.");
+        }
 
-        // GPT 호출
-        String reply = gptClient.generateAdvice(content, emotionTags);
+        // 2. GPT 에게 조언 및 감정 태그 요청
+        GptResponseDTO gptResponseDTO = gptClient.generateAdvice(diary.getContent());
 
-        return ReplyResponseDTO.builder()
-                .diaryId(diary.getId())
-                .emotionTags(emotionTags)
-                .reply(reply)
-                .build();
+        // 3. 응답을 엔터티로 저장
+        GptResponse response = new GptResponse();
+        response.setDiary(diary);
+        response.setResponse(gptResponseDTO.getResponse());
+        response.setEmotion1(gptResponseDTO.getEmotion1());
+        response.setEmotion2(gptResponseDTO.getEmotion2());
+
+        // 4. 응답 저장 후, DTO 로 변환해서 반환
+        GptResponse saved = gptResponseRepository.save(response);
+        return new GptResponseDTO(saved);
+
+    }
+
+    // 조언 조회하기
+    public GptResponseDTO getGptResponse(Long diaryId) {
+        GptResponse response = gptResponseRepository.findByDiaryId(diaryId)
+                .orElseThrow(() -> new IllegalArgumentException("GPT 응답이 존재하지 않습니다."));
+        return new GptResponseDTO(response);
     }
 }

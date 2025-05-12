@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.echoes_be.common.ApiResponse;
 import org.example.echoes_be.domain.Diary;
+import org.example.echoes_be.domain.GptResponse;
 import org.example.echoes_be.dto.*;
 import org.example.echoes_be.security.JwtUtil;
 import org.example.echoes_be.service.DiaryService;
@@ -168,11 +169,17 @@ public class DiaryController {
         }
     }
 
-    // 조언 생성
-    @PostMapping("/{diaryId}/reply")
-    public ResponseEntity<ReplyResponseDTO> generateReply(@PathVariable Long diaryId) {
-        ReplyResponseDTO response = diaryService.generateReply(diaryId);
+    // 조언 생성하기
+    @PostMapping("/{diaryId}/create")
+    public ResponseEntity<GptResponseDTO> createGptResponse(@PathVariable Long diaryId) {
+        GptResponseDTO response = diaryService.createGptResponse(diaryId);
         return ResponseEntity.ok(response);
     }
 
+    // 조언 조회하기
+    @GetMapping("/{diaryId}/response")
+    public ResponseEntity<GptResponseDTO> getGptResponse(@PathVariable Long diaryId) {
+        GptResponseDTO response = diaryService.getGptResponse(diaryId);
+        return ResponseEntity.ok(response);
+    }
 }
