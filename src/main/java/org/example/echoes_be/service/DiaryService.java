@@ -47,6 +47,7 @@ public class DiaryService {
                 .user(user) // 작성자 정보 연결
                 .title(request.getTitle())
                 .content(request.getContent())
+                .userEmotion(request.getUserEmotion()) //감정 추가
                 .createdAt(createdDate)
                 .build(); //객체 생성을 완료하는 메서드
 
@@ -87,22 +88,27 @@ public class DiaryService {
         return diaryRepository.save(diary);
     }
 
-    //일기 수정
-    public Diary updateDiary(Long user_id, DiaryUpdateRequestDTO request){
-        //사용자 확인
-        Users user = userRepository.findById(user_id)
-                .orElseThrow(()-> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        // 다이어리 조회
-        Diary diary = diaryRepository.findById(request.getDiaryId())
+    // 일기 수정
+    public Diary updateDiary(Long userId, Long diaryId, DiaryUpdateRequestDTO request) {
+        // 사용자 확인
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 일기 조회
+        Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalArgumentException("일기를 찾을 수 없습니다."));
-        // 소유자 및 삭제 여부 확인
-        if (!diary.getUser().getId().equals(user_id)) {
+
+        // 소유자 확인
+        if (!diary.getUser().getId().equals(userId)) {
             throw new SecurityException("본인의 일기만 수정할 수 있습니다.");
         }
+
+        // 삭제 여부 확인
         if (diary.isDeleted()) {
             throw new IllegalStateException("삭제된 일기는 수정할 수 없습니다.");
         }
-        // 수정 필드 적용
+
+        // 필드 수정
         diary.setTitle(request.getTitle());
         diary.setContent(request.getContent());
 
@@ -117,6 +123,11 @@ public class DiaryService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 작성된 일기가 없습니다."));
 
         return DiaryResponseDTO.fromEntity(diary);
+    }
+
+    //월별 해당일에 일기가 있는지 조회
+    public List<DiaryCalendarResponseDTO> getDiariesByMonth(Long userId, int year, int month) {
+        return diaryRepository.findCalendarEntriesByMonth(userId, year, month);
     }
 
     //즐겨찾기 된 일기 조회

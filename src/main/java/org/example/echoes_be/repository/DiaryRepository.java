@@ -3,6 +3,7 @@ package org.example.echoes_be.repository;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.example.echoes_be.domain.Diary;
 import org.example.echoes_be.domain.Users;
+import org.example.echoes_be.dto.DiaryCalendarResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,19 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     //일기 조회
     Optional<Diary> findByUserIdAndCreatedAtAndIsDeletedFalse(Long userId, LocalDate createdAt);
     List<Diary> findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(Long userId);
+
+    //달력에서 해당하는 날짜에 일기가 있는지 없는지
+    @Query("""
+    SELECT new org.example.echoes_be.dto.DiaryCalendarResponseDTO(d.createdAt, d.userEmotion)
+    FROM Diary d
+    WHERE d.user.id = :userId
+      AND d.isDeleted = false
+      AND FUNCTION('YEAR', d.createdAt) = :year
+      AND FUNCTION('MONTH', d.createdAt) = :month
+""")
+    List<DiaryCalendarResponseDTO> findCalendarEntriesByMonth(@Param("userId") Long userId,
+                                                              @Param("year") int year,
+                                                              @Param("month") int month);
 
 
 }

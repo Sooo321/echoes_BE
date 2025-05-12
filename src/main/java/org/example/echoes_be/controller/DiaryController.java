@@ -30,6 +30,7 @@ public class DiaryController {
         return null;
     }
 
+    //일기 저장
     @PostMapping("/save")
     public ResponseEntity<ApiResponse<Diary>> saveDiary(
             @RequestBody DiarySaveRequestDTO request,
@@ -61,6 +62,7 @@ public class DiaryController {
 //        }
 //    }
 
+    //일기 삭제
     @DeleteMapping("/{diaryId}")
     public ResponseEntity<ApiResponse<Diary>> deleteDiary(
             @PathVariable Long diaryId,
@@ -78,21 +80,53 @@ public class DiaryController {
         }
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<ApiResponse<Diary>> UpdateDiary(
+    //일기 수정
+    @PatchMapping("/{diaryId}")
+    public ResponseEntity<ApiResponse<Diary>> updateDiary(
+            @PathVariable Long diaryId,
             @RequestBody DiaryUpdateRequestDTO request,
             HttpServletRequest httpRequest
-    ){
+    ) {
         try {
             String token = resolveToken(httpRequest); // Authorization 헤더에서 토큰 꺼냄
-            String userId = jwtUtil.extractUserId(token); // 토큰에서 userId 추출
+            Long userId = Long.parseLong(jwtUtil.extractUserId(token)); // 토큰에서 userId 추출
 
-            Diary diary = diaryService.updateDiary(Long.parseLong(userId), request); // userId와 request를 같이 넘김
+            Diary diary = diaryService.updateDiary(userId, diaryId, request); // 수정 수행
             return ResponseEntity.ok(ApiResponse.success(diary));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
+//    @PostMapping("/update")
+//    public ResponseEntity<ApiResponse<Diary>> UpdateDiary(
+//            @RequestBody DiaryUpdateRequestDTO request,
+//            HttpServletRequest httpRequest
+//    ){
+//        try {
+//            String token = resolveToken(httpRequest); // Authorization 헤더에서 토큰 꺼냄
+//            String userId = jwtUtil.extractUserId(token); // 토큰에서 userId 추출
+//
+//            Diary diary = diaryService.updateDiary(Long.parseLong(userId), request); // userId와 request를 같이 넘김
+//            return ResponseEntity.ok(ApiResponse.success(diary));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+//        }
+//    }
+
+    @GetMapping("/calendar")
+    public ResponseEntity<ApiResponse<List<DiaryCalendarResponseDTO>>> getDiariesByMonth(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            HttpServletRequest request
+    ) {
+        String token = resolveToken(request);
+        Long userId = Long.parseLong(jwtUtil.extractUserId(token));
+
+        List<DiaryCalendarResponseDTO> result = diaryService.getDiariesByMonth(userId, year, month);
+        return ResponseEntity.ok(ApiResponse.success(result));
+    }
+
+
 
     // 날짜별 일기 조회
     @GetMapping("/date")
@@ -113,6 +147,10 @@ public class DiaryController {
         List<DiaryResponseDTO> result = diaryService.getFavoriteDiaries(userId);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
+
+
+
+
 
 
     @PostMapping("/favorite-toggle")

@@ -34,7 +34,7 @@ public class UserService {
 //    }
 
    public Users signup(UserSignupRequestDTO request) {
-       String encodedPassword = passwordEncoder.encode(request.getPassword());
+       String encodedPassword = passwordEncoder.encode(request.getPassword()); //비밀번호 암호화
         Long today = Long.valueOf(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)); //오늘 날짜 받아오기
 
        Users user = Users.builder()

@@ -33,6 +33,10 @@ public class Diary {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    //사용자 감정 추가
+    @Column(name = "user_emotion", length = 20)
+    private String userEmotion;
+
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt;
 

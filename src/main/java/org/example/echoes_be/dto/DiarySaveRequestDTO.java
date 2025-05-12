@@ -14,6 +14,7 @@ public class DiarySaveRequestDTO {
     private Long diaryId;
     private String title;
     private String content;
+    private String userEmotion;
 
     @JsonFormat(pattern = "yyyy-MM-dd") //프론트로부터 받는 문자열의 형태
     private String created_at;

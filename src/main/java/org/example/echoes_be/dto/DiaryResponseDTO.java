@@ -14,6 +14,7 @@ public class DiaryResponseDTO {
     private Long diaryId;
     private String title;
     private String content;
+    private String userEmotion;
     private String createdAt;
     private boolean isFavorite;
 
@@ -22,6 +23,7 @@ public class DiaryResponseDTO {
                 .diaryId(diary.getId())
                 .title(diary.getTitle())
                 .content(diary.getContent())
+                .userEmotion(diary.getUserEmotion())
                 .createdAt(diary.getCreatedAt().toString())
                 .isFavorite(diary.isFavorite())
                 .build();
