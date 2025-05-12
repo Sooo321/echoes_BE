@@ -5,11 +5,13 @@ import org.example.echoes_be.domain.Diary;
 import org.example.echoes_be.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
     // 소프트 삭제된 항목은 제외하고 조회
     @Query("SELECT d FROM Diary d WHERE d.user.id = :userId AND d.isDeleted = false")
