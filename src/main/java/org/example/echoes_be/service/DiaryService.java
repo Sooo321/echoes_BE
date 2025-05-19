@@ -32,6 +32,29 @@ public class DiaryService {
         this.gptClient = gptClient;
     }
 
+    //일기 저장(삭제 예정)
+//    public DiaryDetailDTO saveDiary(Long userId, DiarySaveRequestDTO request) {
+//        Users user = userRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+//
+//        LocalDate createdDate = LocalDate.parse(request.getCreated_at());
+//
+//                // 2. Diary 객체를 생성 (DTO에서 데이터 추출)
+//        Diary diary = Diary.builder()
+//                .user(user) // 작성자 정보 연결
+//                .title(request.getTitle())
+//                .content(request.getContent())
+//                .userEmotion(request.getUserEmotion()) //감정 추가
+//                .createdAt(createdDate)
+//                .build(); //객체 생성을 완료하는 메서드
+//
+//        diaryRepository.save(diary);
+//
+//        // 저장 후 LEFT JOIN으로 조합된 결과 조회
+//        return diaryRepository.findDetailByDiaryId(userId, diary.getId())
+//                .orElseThrow(() -> new RuntimeException("저장한 일기를 찾을 수 없습니다."));
+//    }
+
     //일기 저장
     public Diary saveDiary(Long user_id, DiarySaveRequestDTO request ){
         //request는 클라이언트에서 보내는 요청 데이터를 담는 변수라는 의미로 많이 사용됨.
@@ -60,19 +83,7 @@ public class DiaryService {
 
     }
 
-    //일기 삭제
-//    public Diary deleteDiary(Long user_id, DiaryDeleteRequestDTO request) {
-//        //사용자 확인
-//        Users user = userRepository.findById(user_id)
-//                .orElseThrow(()-> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-//        // 다이어리 조회
-//        Diary diary = diaryRepository.findById(request.getDiaryId())
-//                .orElseThrow(() -> new IllegalArgumentException("일기를 찾을 수 없습니다."));
-//
-//        diary.setDeleted(true);
-//
-//        return diaryRepository.save(diary);
-//    }
+
     public Diary deleteDiary(Long userId, Long diaryId) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -114,7 +125,7 @@ public class DiaryService {
 
         return diaryRepository.save(diary);
     }
-    //일기 조회
+    //일기 조회 (이전 버전으로 돌아옴)
     public DiaryResponseDTO getDiaryByDate(Long userId,LocalDate date) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -125,17 +136,34 @@ public class DiaryService {
         return DiaryResponseDTO.fromEntity(diary);
     }
 
+//    public DiaryDetailDTO getDiaryByDate(Long userId, LocalDate date) {
+//        return diaryRepository.findDetailByUserIdAndCreatedAt(userId, date)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 작성된 일기가 없습니다."));
+//    }
+
+
     //월별 해당일에 일기가 있는지 조회
     public List<DiaryCalendarResponseDTO> getDiariesByMonth(Long userId, int year, int month) {
         return diaryRepository.findCalendarEntriesByMonth(userId, year, month);
     }
 
+    //즐겨찾기 된 일기 조회(보류)
+//    public List<DiaryResponseDTO> getFavoriteDiaries(Long userId) {
+//        Users user = userRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+//
+//        List<Diary> diaries = diaryRepository.findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(userId);
+//
+//        return diaries.stream()
+//                .map(DiaryResponseDTO::fromEntity)
+//                .toList();
+//    }
     //즐겨찾기 된 일기 조회
     public List<DiaryResponseDTO> getFavoriteDiaries(Long userId) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        List<Diary> diaries = diaryRepository.findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(userId);
+        List<Diary> diaries = diaryRepository.findByUserIdAndIsFavoriteTrueAndIsDeletedFalseOrderByCreatedAtDesc(userId);
 
         return diaries.stream()
                 .map(DiaryResponseDTO::fromEntity)
@@ -181,6 +209,13 @@ public class DiaryService {
         response.setResponse(gptResponseDTO.getResponse());
         response.setEmotion1(gptResponseDTO.getEmotion1());
         response.setEmotion2(gptResponseDTO.getEmotion2());
+
+        //인지 왜곡 분류
+//        response.setDistortionType(gptResponseDTO.getDistortionType());
+
+        // 응답이 존재하면 true
+        boolean isValidResponse = gptResponseDTO.getResponse() != null && !gptResponseDTO.getResponse().isBlank();
+        response.setGptResponse(isValidResponse);
 
         // 4. 응답 저장 후, DTO 로 변환해서 반환
         GptResponse saved = gptResponseRepository.save(response);
