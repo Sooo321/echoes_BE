@@ -19,9 +19,17 @@ public class GptResponse {
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
+    @Column(name = "response", columnDefinition = "TEXT", nullable = false)
     private String response;
     private String emotion1;
     private String emotion2;
 
-    private LocalDateTime createdAt = LocalDateTime.now().withSecond(0).withNano(0);
+//    // CBT 인지 왜곡 종류 저장 (예: "흑백논리")
+//    @Column(name = "distortion_type")
+//    private String distortionType;
+
+    @Column(name = "is_gpt_response")
+    private Boolean gptResponse = false;
+
+//    private LocalDateTime createdAt = LocalDateTime.now().withSecond(0).withNano(0);
 }
