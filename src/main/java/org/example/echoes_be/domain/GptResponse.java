@@ -31,5 +31,5 @@ public class GptResponse {
     @Column(name = "is_gpt_response")
     private Boolean gptResponse = false;
 
-//    private LocalDateTime createdAt = LocalDateTime.now().withSecond(0).withNano(0);
+    private LocalDateTime createdAt = LocalDateTime.now().withSecond(0).withNano(0);
 }
