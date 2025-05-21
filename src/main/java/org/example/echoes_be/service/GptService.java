@@ -41,11 +41,18 @@ public class GptService {
         response.setEmotion1(gptResponseDTO.getEmotion1());
         response.setEmotion2(gptResponseDTO.getEmotion2());
 
+        //인지 왜곡 분류
+        //response.setDistortionType(gptResponseDTO.getDistortionType());
+
+        // 응답이 존재하면 true
+        boolean isValidResponse = gptResponseDTO.getResponse() != null && !gptResponseDTO.getResponse().isBlank();
+        response.setGptResponse(isValidResponse);
+
         // 4. 응답 저장 후, DTO 로 변환해서 반환
         GptResponse saved = gptResponseRepository.save(response);
         return new GptResponseDTO(saved);
-
     }
+
 
     // 조언 조회하기
     public GptAdviceDTO getGptResponse(Long diaryId) {
