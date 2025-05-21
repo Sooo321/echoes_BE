@@ -52,8 +52,7 @@ spring:
 
 openai:
   api:
-    key: sk
-
+    key: sk-
 ai:
   api:
     url:

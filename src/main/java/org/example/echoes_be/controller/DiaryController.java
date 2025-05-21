@@ -47,21 +47,6 @@ public class DiaryController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
-//    @PostMapping("/delete")
-//    public ResponseEntity<ApiResponse<Diary>> deleteDiary(
-//            @RequestBody DiaryDeleteRequestDTO request,
-//            HttpServletRequest httpRequest
-//    ){
-//        try {
-//            String token = resolveToken(httpRequest); // Authorization 헤더에서 토큰 꺼냄
-//            String userId = jwtUtil.extractUserId(token); // 토큰에서 userId 추출
-//
-//            Diary diary = diaryService.deleteDiary(Long.parseLong(userId), request); // userId와 request를 같이 넘김
-//            return ResponseEntity.ok(ApiResponse.success(diary));
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
-//        }
-//    }
 
     //일기 삭제
     @DeleteMapping("/{diaryId}")
@@ -98,21 +83,6 @@ public class DiaryController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
-//    @PostMapping("/update")
-//    public ResponseEntity<ApiResponse<Diary>> UpdateDiary(
-//            @RequestBody DiaryUpdateRequestDTO request,
-//            HttpServletRequest httpRequest
-//    ){
-//        try {
-//            String token = resolveToken(httpRequest); // Authorization 헤더에서 토큰 꺼냄
-//            String userId = jwtUtil.extractUserId(token); // 토큰에서 userId 추출
-//
-//            Diary diary = diaryService.updateDiary(Long.parseLong(userId), request); // userId와 request를 같이 넘김
-//            return ResponseEntity.ok(ApiResponse.success(diary));
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
-//        }
-//    }
 
     @GetMapping("/calendar")
     public ResponseEntity<ApiResponse<List<DiaryCalendarResponseDTO>>> getDiariesByMonth(
@@ -128,8 +98,7 @@ public class DiaryController {
     }
 
 
-
-    // 날짜별 일기 조회
+    // 날짜별 일기 조회(이전 버전으로 돌아감)
     @GetMapping("/date")
     public ResponseEntity<ApiResponse<DiaryResponseDTO>> getDiaryByDate(
             @RequestParam("date") String dateStr,
@@ -142,17 +111,26 @@ public class DiaryController {
         DiaryResponseDTO result = diaryService.getDiaryByDate(userId, date);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
+    //날짜별 일기 조회
+//    @GetMapping("/date")
+//    public ResponseEntity<ApiResponse<DiaryDetailDTO>> getDiaryByDate(
+//            @RequestParam("date") String dateStr,
+//            HttpServletRequest request
+//    ) {
+//        String token = resolveToken(request);
+//        Long userId = Long.parseLong(jwtUtil.extractUserId(token));
+//        LocalDate date = LocalDate.parse(dateStr);
+//
+//        DiaryDetailDTO result = diaryService.getDiaryByDate(userId, date);
+//        return ResponseEntity.ok(ApiResponse.success(result));
+//    }
 
+    //즐겨찾기한 일기 조회
     @GetMapping("/favorites")
     public ResponseEntity<ApiResponse<List<DiaryResponseDTO>>> getFavoriteDiaries(@RequestParam Long userId) {
         List<DiaryResponseDTO> result = diaryService.getFavoriteDiaries(userId);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
-
-
-
-
-
 
     @PostMapping("/favorite-toggle")
     public ResponseEntity<ApiResponse<Diary>> toggleFavoriteDiary(
