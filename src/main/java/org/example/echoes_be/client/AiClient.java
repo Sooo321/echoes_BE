@@ -26,6 +26,7 @@ public class AiClient {
 
     public ScoreResponseDTO requestEmotionScore(ScoreRequestDTO request) {
 
+        /*
         // 1. HTTP 헤더 설정 (Content-Type: application/json)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -45,8 +46,24 @@ public class AiClient {
         System.out.println("요청 데이터: 제목=" + request.getTitle() + ", 내용=" + request.getContent());
 
 
-
         // 4. 응답 본문(감정 점수 DTO) 반환
         return response.getBody();
+        */
+
+        //==================
+        // ✅ 테스트용 가짜 응답
+        System.out.println("[Mock AI 호출]");
+        System.out.println("제목: " + request.getTitle());
+        System.out.println("내용: " + request.getContent());
+        System.out.println("prevScore: " + request.getPrevScore());
+        System.out.println("prevState: " + request.getPrevState());
+
+        // 임의의 점수 응답을 반환
+        return ScoreResponseDTO.builder()
+                .score(80.0)    // 테스트용 감정 점수
+                .state(5.0)     // 테스트용 감정 상태
+                .build();
+
+
     }
 }

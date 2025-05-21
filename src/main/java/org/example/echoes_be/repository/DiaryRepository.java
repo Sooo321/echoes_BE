@@ -33,6 +33,4 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<DiaryCalendarResponseDTO> findCalendarEntriesByMonth(@Param("userId") Long userId,
                                                               @Param("year") int year,
                                                               @Param("month") int month);
-
-
 }
