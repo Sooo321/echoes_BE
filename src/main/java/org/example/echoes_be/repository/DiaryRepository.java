@@ -41,7 +41,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<DiaryCalendarResponseDTO> findCalendarEntriesByMonth(@Param("userId") Long userId,
                                                               @Param("year") int year,
                                                               @Param("month") int month);
-
+           
 
 //    //일기조회 + DiaryDetail
 //    @Query("""
@@ -94,7 +94,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 //      AND d.isDeleted = false
 //""")
 //    Optional<DiaryDetailDTO> findDetailByDiaryId(@Param("userId") Long userId, @Param("diaryId") Long diaryId);
-
 
 
 

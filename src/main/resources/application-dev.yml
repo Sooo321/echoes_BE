@@ -43,6 +43,7 @@ spring:
           writetimeout: 5000
       auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
 
+
   data:
     redis:
       host: localhost
@@ -54,7 +55,7 @@ openai:
     key: sk-
 ai:
   api:
-    url: http://192.168.4.39:8000/diary_score
+    url:
 
 
 logging:
