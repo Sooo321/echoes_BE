@@ -15,7 +15,9 @@ public class GptResponseDTO {
     private String response;
     private String emotion1;
     private String emotion2;
-    private String createdAt;
+//    private String createdAt;
+//    private String distortionType;
+    private Boolean isGptResponse;
 
     public GptResponseDTO(GptResponse entity) {
         this.id = entity.getId();
@@ -23,9 +25,12 @@ public class GptResponseDTO {
         this.emotion1 = entity.getEmotion1();
         this.emotion2 = entity.getEmotion2();
 
+//        this.distortionType = entity.getDistortionType();
+        this.isGptResponse = entity.getGptResponse();
+
         // 원하는 형식: "yyyy-MM-dd HH:mm"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        this.createdAt = entity.getCreatedAt().format(formatter);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        this.createdAt = entity.getCreatedAt().format(formatter);
     }
 
 }

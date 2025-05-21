@@ -1,8 +1,6 @@
 package org.example.echoes_be.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-
 
 import java.time.LocalDate;
 
@@ -10,13 +8,16 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiarySaveRequestDTO {
+public class DiaryDetailDTO {
     private Long diaryId;
     private String title;
     private String content;
     private String userEmotion;
+    private LocalDate createdAt;
+    private Boolean gptResponse;
+    private String gptEmotion1;
+    private String gptEmotion2;
 
-    @JsonFormat(pattern = "yyyy-MM-dd") //프론트로부터 받는 문자열의 형태
-    private String created_at;
 
+    private Double emotionScore;
 }

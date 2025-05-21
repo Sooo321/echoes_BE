@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 // h2-console 화면 구성 허용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/auth/**","/h2-console/**").permitAll()
+                        .requestMatchers("/api/login", "/api/auth/**","/h2-console/**","/error","/error/**" ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
