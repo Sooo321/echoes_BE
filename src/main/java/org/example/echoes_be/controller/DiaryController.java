@@ -8,6 +8,7 @@ import org.example.echoes_be.domain.GptResponse;
 import org.example.echoes_be.dto.*;
 import org.example.echoes_be.security.JwtUtil;
 import org.example.echoes_be.service.DiaryService;
+import org.example.echoes_be.service.GptService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -147,17 +148,27 @@ public class DiaryController {
         }
     }
 
+
+    private final GptService gptService;
+
     // 조언 생성하기
     @PostMapping("/{diaryId}/create")
     public ResponseEntity<GptResponseDTO> createGptResponse(@PathVariable Long diaryId) {
-        GptResponseDTO response = diaryService.createGptResponse(diaryId);
+        GptResponseDTO response = gptService.createGptResponse(diaryId);
         return ResponseEntity.ok(response);
     }
 
     // 조언 조회하기
     @GetMapping("/{diaryId}/response")
-    public ResponseEntity<GptResponseDTO> getGptResponse(@PathVariable Long diaryId) {
-        GptResponseDTO response = diaryService.getGptResponse(diaryId);
+    public ResponseEntity<GptAdviceDTO> getGptResponse(@PathVariable Long diaryId) {
+        GptAdviceDTO response = gptService.getGptResponse(diaryId);
+        return ResponseEntity.ok(response);
+    }
+
+    // 감정 태그 조회하기
+    @GetMapping("/{diaryId}/emotion")
+    public ResponseEntity<GptEmotionDTO> getGptEmotion(@PathVariable Long diaryId) {
+        GptEmotionDTO response = gptService.getGptEmotion(diaryId);
         return ResponseEntity.ok(response);
     }
 }
