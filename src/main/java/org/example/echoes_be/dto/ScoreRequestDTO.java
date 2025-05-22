@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
+// AI <- 감정 스코어링 요청
 public class ScoreRequestDTO {
     private String title;
     private String content;
