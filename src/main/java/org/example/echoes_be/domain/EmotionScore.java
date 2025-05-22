@@ -19,9 +19,15 @@ public class EmotionScore {
     private Long id;
 
     // 하나의 일기에 대해 날짜별로 score 값을 저장하기 위함.
-    @ManyToOne
-    @JoinColumn(name = "diary_id")
+    @OneToOne
+    @JoinColumn(name = "diary_id", unique = true, nullable = false)
     private Diary diary;
+
+    // 사용자별 감정 스코어링 분석을 진행하기 위함. -> 유저 정보 필요
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
+
 
     // 이전 감정 점수 및 상태 (요청 시 사용)
     private double prevScore;
