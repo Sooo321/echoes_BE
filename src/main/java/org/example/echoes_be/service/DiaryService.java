@@ -223,14 +223,6 @@ public class DiaryService {
 
     }
 
-    //조언 존재 여부 확인
-    public boolean getGptResponseFlag(Long diaryId) {
-        // GPT 응답이 존재하고, 그 안의 flag가 true인 경우만 true 반환
-        return gptResponseRepository.findByDiaryId(diaryId)
-                .map(GptResponse::getGptResponse)
-                .orElse(false); // 응답 객체 자체가 없으면 false
-    }
-
     // 조언 조회하기
     public GptResponseDTO getGptResponse(Long diaryId) {
         GptResponse response = gptResponseRepository.findByDiaryId(diaryId)
