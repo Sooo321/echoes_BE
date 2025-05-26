@@ -154,6 +154,13 @@ public class DiaryController {
         return ResponseEntity.ok(response);
     }
 
+    // 조언 존재 여부 확인하기
+    @GetMapping("/flag/{diaryId}")
+    public ResponseEntity<ApiResponse<Boolean>> getGptResponseFlag(@PathVariable Long diaryId) {
+        boolean flag = diaryService.getGptResponseFlag(diaryId);
+        return ResponseEntity.ok(ApiResponse.success(flag));
+    }
+
     // 조언 조회하기
     @GetMapping("/{diaryId}/response")
     public ResponseEntity<GptResponseDTO> getGptResponse(@PathVariable Long diaryId) {
