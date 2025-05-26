@@ -33,7 +33,7 @@ public class DiaryController {
 
     //일기 저장
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<Diary>> saveDiary(
+    public ResponseEntity<ApiResponse<DiaryResponseDTO>> saveDiary(
             @RequestBody DiarySaveRequestDTO request,
             HttpServletRequest httpRequest
     ) {
@@ -41,8 +41,9 @@ public class DiaryController {
             String token = resolveToken(httpRequest); // Authorization 헤더에서 토큰 꺼냄
             String userId = jwtUtil.extractUserId(token); // 토큰에서 userId 추출
 
-            Diary diary = diaryService.saveDiary(Long.parseLong(userId), request); // userId와 request를 같이 넘김
-            return ResponseEntity.ok(ApiResponse.success(diary));
+            Diary diary = diaryService.saveDiary(Long.parseLong(userId), request);
+            DiaryResponseDTO diaryDTO = DiaryResponseDTO.fromEntity(diary);
+            return ResponseEntity.ok(ApiResponse.success(diaryDTO));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
@@ -161,9 +162,10 @@ public class DiaryController {
     // 조언 존재 여부 확인하기
     @GetMapping("/flag/{diaryId}")
     public ResponseEntity<ApiResponse<Boolean>> getGptResponseFlag(@PathVariable Long diaryId) {
-        boolean flag = diaryService.getGptResponseFlag(diaryId);
+        boolean flag = gptService.getGptResponseFlag(diaryId);
         return ResponseEntity.ok(ApiResponse.success(flag));
     }
+
 
     // 조언 조회하기
     @GetMapping("/{diaryId}/response")

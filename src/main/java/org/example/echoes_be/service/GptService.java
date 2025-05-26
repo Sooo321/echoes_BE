@@ -12,6 +12,8 @@ import org.example.echoes_be.repository.DiaryRepository;
 import org.example.echoes_be.repository.GptResponseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class GptService {
@@ -53,6 +55,14 @@ public class GptService {
         return new GptResponseDTO(saved);
     }
 
+
+
+    //조언 존재 유무 확인
+    public boolean getGptResponseFlag(Long diaryId) {
+        return gptResponseRepository.findByDiaryId(diaryId)
+                .map(GptResponse::getGptResponse)
+                .orElse(false);
+    }
 
     // 조언 조회하기
     public GptAdviceDTO getGptResponse(Long diaryId) {

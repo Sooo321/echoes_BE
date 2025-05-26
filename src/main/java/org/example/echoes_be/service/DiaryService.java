@@ -4,7 +4,6 @@ package org.example.echoes_be.service;
 import jakarta.transaction.Transactional;
 import org.example.echoes_be.client.GPTClient;
 import org.example.echoes_be.domain.Diary;
-import org.example.echoes_be.domain.GptResponse;
 import org.example.echoes_be.domain.Users;
 import org.example.echoes_be.dto.*;
 import org.example.echoes_be.repository.DiaryRepository;
@@ -23,37 +22,11 @@ public class DiaryService {
 
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
-    private final GptResponseRepository gptResponseRepository;
 
     public DiaryService(UserRepository userRepository, DiaryRepository diaryRepository, GptResponseRepository gptResponseRepository, GPTClient gptClient){
         this.userRepository = userRepository;
         this.diaryRepository = diaryRepository;
-        this.gptResponseRepository = gptResponseRepository;
-        this.gptClient = gptClient;
     }
-
-    //일기 저장(삭제 예정)
-//    public DiaryDetailDTO saveDiary(Long userId, DiarySaveRequestDTO request) {
-//        Users user = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-//
-//        LocalDate createdDate = LocalDate.parse(request.getCreated_at());
-//
-//                // 2. Diary 객체를 생성 (DTO에서 데이터 추출)
-//        Diary diary = Diary.builder()
-//                .user(user) // 작성자 정보 연결
-//                .title(request.getTitle())
-//                .content(request.getContent())
-//                .userEmotion(request.getUserEmotion()) //감정 추가
-//                .createdAt(createdDate)
-//                .build(); //객체 생성을 완료하는 메서드
-//
-//        diaryRepository.save(diary);
-//
-//        // 저장 후 LEFT JOIN으로 조합된 결과 조회
-//        return diaryRepository.findDetailByDiaryId(userId, diary.getId())
-//                .orElseThrow(() -> new RuntimeException("저장한 일기를 찾을 수 없습니다."));
-//    }
 
     //일기 저장
     public Diary saveDiary(Long user_id, DiarySaveRequestDTO request ){
@@ -74,10 +47,6 @@ public class DiaryService {
                 .createdAt(createdDate)
                 .build(); //객체 생성을 완료하는 메서드
 
-        //Diary.builder()
-        //Lombok의 @Builder 어노테이션을 사용해서 Diary 객체를 만드는 방식.
-        //Diary 엔티티 클래스에 @Builder가 선언되어 있어야 사용 가능함.
-        //빌더 패턴을 사용하면 객체를 필드별로 설정하고 최종적으로 .build()를 호출해서 객체를 생성함.
         // 3. Diary 객체를 DB에 저장
         return diaryRepository.save(diary);
 
@@ -136,10 +105,6 @@ public class DiaryService {
         return DiaryResponseDTO.fromEntity(diary);
     }
 
-//    public DiaryDetailDTO getDiaryByDate(Long userId, LocalDate date) {
-//        return diaryRepository.findDetailByUserIdAndCreatedAt(userId, date)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 날짜에 작성된 일기가 없습니다."));
-//    }
 
 
     //월별 해당일에 일기가 있는지 조회
@@ -147,17 +112,6 @@ public class DiaryService {
         return diaryRepository.findCalendarEntriesByMonth(userId, year, month);
     }
 
-    //즐겨찾기 된 일기 조회(보류)
-//    public List<DiaryResponseDTO> getFavoriteDiaries(Long userId) {
-//        Users user = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-//
-//        List<Diary> diaries = diaryRepository.findByUserIdAndIsFavoriteTrueAndIsDeletedFalse(userId);
-//
-//        return diaries.stream()
-//                .map(DiaryResponseDTO::fromEntity)
-//                .toList();
-//    }
     //즐겨찾기 된 일기 조회
     public List<DiaryResponseDTO> getFavoriteDiaries(Long userId) {
         Users user = userRepository.findById(userId)
@@ -185,48 +139,4 @@ public class DiaryService {
         return diaryRepository.save(diary);
     }
 
-
-
-    private final GPTClient gptClient;
-
-    // 조언 생성하기
-    @Transactional
-    public GptResponseDTO createGptResponse(Long diaryId) {
-        // 1. 저장된 일기 가져오기
-        Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalArgumentException("일기를 찾을 수 없습니다."));
-
-        if (gptResponseRepository.findById(diaryId).isPresent()) {
-            throw new IllegalStateException("이미 해당 일기에 대한 조언이 존재합니다.");
-        }
-
-        // 2. GPT 에게 조언 및 감정 태그 요청
-        GptResponseDTO gptResponseDTO = gptClient.generateAdvice(diary.getContent());
-
-        // 3. 응답을 엔터티로 저장
-        GptResponse response = new GptResponse();
-        response.setDiary(diary);
-        response.setResponse(gptResponseDTO.getResponse());
-        response.setEmotion1(gptResponseDTO.getEmotion1());
-        response.setEmotion2(gptResponseDTO.getEmotion2());
-
-        //인지 왜곡 분류
-//        response.setDistortionType(gptResponseDTO.getDistortionType());
-
-        // 응답이 존재하면 true
-        boolean isValidResponse = gptResponseDTO.getResponse() != null && !gptResponseDTO.getResponse().isBlank();
-        response.setGptResponse(isValidResponse);
-
-        // 4. 응답 저장 후, DTO 로 변환해서 반환
-        GptResponse saved = gptResponseRepository.save(response);
-        return new GptResponseDTO(saved);
-
-    }
-
-    // 조언 조회하기
-    public GptResponseDTO getGptResponse(Long diaryId) {
-        GptResponse response = gptResponseRepository.findByDiaryId(diaryId)
-                .orElseThrow(() -> new IllegalArgumentException("GPT 응답이 존재하지 않습니다."));
-        return new GptResponseDTO(response);
-    }
 }

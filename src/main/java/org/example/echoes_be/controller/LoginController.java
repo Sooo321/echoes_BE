@@ -26,13 +26,15 @@ public class LoginController {
     public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@RequestBody UserLoginRequestDTO request) {
         try {
             Users user = userService.login(request);
-            String token = userService.generateToken(user);
+            String accessToken = userService.generateAccessToken(user);
+            String refreshToken = userService.generateAndSaveRefreshToken(user);
 
             LoginResponseDTO responseDTO = new LoginResponseDTO(
-                    token,
                     user.getId(),
                     user.getNickname(),
-                    user.getEmail()
+                    user.getEmail(),
+                    accessToken,
+                    refreshToken
             );
 
             return ResponseEntity.ok(ApiResponse.success(responseDTO));

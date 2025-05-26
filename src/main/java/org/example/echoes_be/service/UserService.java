@@ -1,11 +1,10 @@
 package org.example.echoes_be.service;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import jakarta.transaction.Transactional;
 import org.example.echoes_be.domain.Users;
+import org.example.echoes_be.domain.RefreshToken;
 import org.example.echoes_be.dto.UserLoginRequestDTO;
 import org.example.echoes_be.dto.UserSignupRequestDTO;
+import org.example.echoes_be.repository.RefreshTokenRepository;
 import org.example.echoes_be.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.example.echoes_be.security.JwtUtil;
@@ -27,11 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
-//    public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
-//        this.userRepository = userRepository;
-//        this.jwtUtil = jwtUtil;
-//    }
+    private final RefreshTokenRepository refreshTokenRepository;
 
    public Users signup(UserSignupRequestDTO request) {
        String encodedPassword = passwordEncoder.encode(request.getPassword()); //비밀번호 암호화
@@ -44,8 +39,6 @@ public class UserService {
                .accessDate(today)
                .createdDate(today)
                .build();
-
-
        return userRepository.save(user);
         //저장
     }
@@ -67,13 +60,27 @@ public class UserService {
     }
 
     // 토큰 발급 메서드
-    public String generateToken(Users user) {
-        return jwtUtil.generateToken(user.getId());
+    public String generateAccessToken(Users user) {
+        return jwtUtil.generateAccessToken(user.getId());
     }
 
     // 이메일 인증 후 -> 사용자 저장
     // 사용자 등록
 
+    @Transactional
+    public String generateAndSaveRefreshToken(Users user) {
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId());
+        refreshTokenRepository.deleteByUserId(user.getId()); // 중복 방지
+        refreshTokenRepository.save(RefreshToken.builder()
+                .userId(user.getId())
+                .token(refreshToken)
+                .build());
+        return refreshToken;
+    }
+
+    public void logout(Long userId) {
+        refreshTokenRepository.deleteByUserId(userId);
+    }
 
 
 }

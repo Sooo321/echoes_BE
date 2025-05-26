@@ -24,9 +24,6 @@ public class GptResponse {
     private String emotion1;
     private String emotion2;
 
-//    // CBT 인지 왜곡 종류 저장 (예: "흑백논리")
-//    @Column(name = "distortion_type")
-//    private String distortionType;
 
     @Column(name = "is_gpt_response")
     private Boolean gptResponse = false;
