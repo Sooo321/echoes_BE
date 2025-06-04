@@ -39,5 +39,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
 
 
-
+    // USER 기준, 최근 일주일 일기 조회
+    List<Diary> findByUserIdAndCreatedAtAfter(Long userId, LocalDate date);
 }

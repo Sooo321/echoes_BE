@@ -2,6 +2,7 @@ package org.example.echoes_be.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.echoes_be.client.ReportClient;
 import org.example.echoes_be.common.ApiResponse;
 import org.example.echoes_be.domain.Diary;
 import org.example.echoes_be.domain.GptResponse;
@@ -180,4 +181,5 @@ public class DiaryController {
         GptEmotionDTO response = gptService.getGptEmotion(diaryId);
         return ResponseEntity.ok(response);
     }
+
 }
