@@ -2,11 +2,12 @@ package org.example.echoes_be.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.example.echoes_be.domain.EmotionScore;
 import org.example.echoes_be.dto.EmotionScoreDTO;
 import org.example.echoes_be.dto.ScoreResultDTO;
 import org.example.echoes_be.dto.WeekScoreDTO;
+import org.example.echoes_be.service.DiaryService;
 import org.example.echoes_be.service.EmotionService;
+import org.example.echoes_be.service.GptService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,8 @@ import java.util.List;
 public class EmotionController {
 
     private final EmotionService emotionService;
+    private final DiaryService diaryService;
+    private final GptService gptService;
 
     // AI 에게 감정 스코어링 분석 요청 및 응답 받는 API
     @PostMapping("/{diaryId}/analyze")
@@ -40,4 +43,9 @@ public class EmotionController {
         return ResponseEntity.ok(emotionService.getWeekScore(userId));
     }
 
+    @GetMapping("/{userId}/report")
+    public ResponseEntity<String> getUserReport(@PathVariable Long userId) {
+        String report = gptService.generateUserReport(userId);
+        return ResponseEntity.ok(report);
+    }
 }
