@@ -3,6 +3,7 @@ package org.example.echoes_be.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.echoes_be.client.GPTClient;
+import org.example.echoes_be.client.ReportClient;
 import org.example.echoes_be.domain.Diary;
 import org.example.echoes_be.domain.GptResponse;
 import org.example.echoes_be.dto.GptAdviceDTO;
@@ -12,6 +13,8 @@ import org.example.echoes_be.repository.DiaryRepository;
 import org.example.echoes_be.repository.GptResponseRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -76,5 +79,15 @@ public class GptService {
         GptResponse response = gptResponseRepository.findByDiaryId(diaryId)
                 .orElseThrow(() -> new IllegalArgumentException("GPT 응답이 존재하지 않습니다."));
         return new GptEmotionDTO(response);
+    }
+
+    // 레포트 생성 및 조회
+    private final ReportClient gptReportClient;
+
+    public String generateUserReport(Long userId) {
+        LocalDate fromDate = LocalDate.now().minusDays(7);
+        LocalDateTime fromDateTime = fromDate.atStartOfDay();
+
+        return gptReportClient.generateReport(userId);
     }
 }
