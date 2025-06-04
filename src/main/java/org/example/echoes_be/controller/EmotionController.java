@@ -3,6 +3,7 @@ package org.example.echoes_be.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.echoes_be.domain.EmotionScore;
+import org.example.echoes_be.dto.EmotionMessageResponseDTO;
 import org.example.echoes_be.dto.EmotionScoreDTO;
 import org.example.echoes_be.dto.ScoreResultDTO;
 import org.example.echoes_be.dto.WeekScoreDTO;
@@ -38,6 +39,11 @@ public class EmotionController {
     @GetMapping("/{userId}/weekScore")
     public ResponseEntity<List<WeekScoreDTO>> getWeekScore(@PathVariable Long userId) {
         return ResponseEntity.ok(emotionService.getWeekScore(userId));
+    }
+
+    @GetMapping("/{userId}/todayMessage")
+    public ResponseEntity<EmotionMessageResponseDTO> getTodayEmotionMessage(@PathVariable Long userId) {
+        return ResponseEntity.ok(emotionService.buildTodayEmotionMessage(userId));
     }
 
 }
