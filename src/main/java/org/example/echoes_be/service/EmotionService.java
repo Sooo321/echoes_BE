@@ -94,15 +94,9 @@ public class EmotionService {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
-        // 날짜 범위 설정 (정확히 오늘/어제 하루)
-        LocalDateTime todayStart = today.atStartOfDay();
-        LocalDateTime todayEnd = today.plusDays(1).atStartOfDay();
-        LocalDateTime yesterdayStart = yesterday.atStartOfDay();
-        LocalDateTime yesterdayEnd = yesterday.plusDays(1).atStartOfDay();
-
-        // 오늘 감정 점수 조회
+        // 오늘 감정 점수 조회: diary.createdAt 기준
         Optional<EmotionScore> todayOpt =
-                emotionScoreRepository.findTop1ByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(userId, todayStart, todayEnd);
+                emotionScoreRepository.findByUserIdAndDiaryCreatedAt(userId, today);
 
         if (todayOpt.isEmpty()) {
             return EmotionMessageResponseDTO.builder()
@@ -113,9 +107,9 @@ public class EmotionService {
 
         double todayScore = todayOpt.get().getScore();
 
-        // 어제 감정 점수 조회
+        // 어제 감정 점수 조회: diary.createdAt 기준
         Optional<EmotionScore> yestOpt =
-                emotionScoreRepository.findTop1ByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(userId, yesterdayStart, yesterdayEnd);
+                emotionScoreRepository.findByUserIdAndDiaryCreatedAt(userId, yesterday);
 
         if (yestOpt.isEmpty()) {
             String message;
@@ -140,7 +134,7 @@ public class EmotionService {
         String message;
         String changeType;
 
-        if (diff > 15) {  // 15점 이상 상승
+        if (diff > 15) {
             message = "오늘은 어제보다 훨씬 나아졌네요! 변화가 느껴져요, 정말 멋져요.";
             changeType = "UP";
         } else if (diff > 5) {
