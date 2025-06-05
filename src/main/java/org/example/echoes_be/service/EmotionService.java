@@ -119,9 +119,9 @@ public class EmotionService {
 
         if (yestOpt.isEmpty()) {
             String message;
-            if (todayScore >= 4.0) {
+            if (todayScore >= 80) {
                 message = "오늘은 꽤 괜찮은 하루였네요. 평온함이 느껴져요.";
-            } else if (todayScore >= 2.5) {
+            } else if (todayScore >= 50) {
                 message = "무난한 하루였던 것 같아요. 잘 지내고 있네요.";
             } else {
                 message = "오늘은 조금 힘들었을 수도 있겠어요. 스스로를 잘 돌봐주세요.";
@@ -140,16 +140,16 @@ public class EmotionService {
         String message;
         String changeType;
 
-        if (diff > 0.3) {
+        if (diff > 15) {  // 15점 이상 상승
             message = "오늘은 어제보다 훨씬 나아졌네요! 변화가 느껴져요, 정말 멋져요.";
             changeType = "UP";
-        } else if (diff > 0.1) {
+        } else if (diff > 5) {
             message = "조금씩 기분이 나아지고 있어요. 오늘도 잘 버텨줘서 고마워요.";
             changeType = "UP";
-        } else if (diff < -0.3) {
+        } else if (diff < -15) {
             message = "마음이 힘들었겠네요. 그래도 여기까지 온 것만으로도 잘한 거예요.";
             changeType = "DOWN";
-        } else if (diff < -0.1) {
+        } else if (diff < -5) {
             message = "오늘은 조금 무거운 하루였나 봐요. 괜찮아요, 그런 날도 있어요.";
             changeType = "DOWN";
         } else {
